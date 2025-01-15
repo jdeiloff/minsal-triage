@@ -2,19 +2,27 @@ from reportlab.pdfgen import canvas
 import datetime
 
 def generate_ticket(ticket_data):
-    filename = f"ticket_{ticket_data['patient']['dni']}_{datetime.datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
-    c = canvas.Canvas(filename)
+    """Generate a PDF ticket with patient and triage information"""
+    c = canvas.Canvas("ticket.pdf")
+    c.setFont("Helvetica", 12)
     
-    # Add ticket content
+    # Header
     c.drawString(100, 750, "TICKET DE ATENCIÓN")
+    c.drawString(100, 725, f"Fecha: {ticket_data['timestamp'].strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    # Patient info
     c.drawString(100, 700, f"Paciente: {ticket_data['patient']['nombre']}")
     c.drawString(100, 675, f"DNI: {ticket_data['patient']['dni']}")
-    c.drawString(100, 650, f"Nivel de Triaje: {ticket_data['triage_score']}")
-    c.drawString(100, 625, f"Fecha: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    c.drawString(100, 600, f"Sintomas: {', '.join(ticket_data['symptoms'])}")
-    c.drawString(100, 575, f"Diagnóstico: {ticket_data['diagnosis']}")
-    c.drawString(100, 550, f"Tratamiento: {ticket_data['treatment']}")
-    c.drawString(100, 525, f"Observaciones: {ticket_data['observations']}")
     
-    c.save()
-    return filename 
+    # Triage info
+    c.drawString(100, 650, f"Nivel de Triaje: {ticket_data['triage_score']}")
+    c.drawString(100, 625, f"Síntomas principales: {', '.join(ticket_data['symptoms']['sintomas'][:3])}")
+    
+    # Diagnosis (if available)
+    diagnosis = ticket_data.get('diagnosis', 'Pendiente de evaluación médica')
+    c.drawString(100, 600, f"Diagnóstico: {diagnosis}")
+    
+    # Footer
+    c.drawString(100, 50, "Por favor, espere a ser llamado")
+    
+    c.save() 

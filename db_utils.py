@@ -45,7 +45,7 @@ def create_patient_entry(patient_data):
                     direccion, 
                     genero, 
                     grupo_sanguineo, 
-                    seguro_social
+                    cuit
                 ) VALUES (
                     %(dni)s, 
                     %(nombre)s, 
@@ -54,7 +54,7 @@ def create_patient_entry(patient_data):
                     %(direccion)s, 
                     %(genero)s, 
                     %(grupo_sanguineo)s, 
-                    %(seguro_social)s
+                    %(cuit)s
                 ) RETURNING *;
             """
             
@@ -140,3 +140,97 @@ def update_patient_record(patient_id, update_data):
             
             cur.execute(sql, execution_data)
             conn.commit() 
+
+def create_triage_record(patient_dni, triage_data):
+    """Create a new triage record for a patient"""
+    try:
+        conn = get_db_connection()
+        with conn.cursor(cursor_factory=DictCursor) as cur:
+            # First get patient_id from dni
+            cur.execute("SELECT id FROM patients WHERE dni = %s", (patient_dni,))
+            patient = cur.fetchone()
+            
+            if not patient:
+                raise ValueError(f"Patient with DNI {patient_dni} not found")
+            
+            # Insert triage record
+            sql = """
+                INSERT INTO triage_records (
+                    patient_id,
+                    presion_arterial,
+                    temperatura,
+                    frecuencia_cardiaca,
+                    saturacion_oxigeno,
+                    notas,
+                    nivel_triage,
+                    verificado_por,
+                    sintomas
+                ) VALUES (
+                    %(patient_id)s,
+                    %(presion_arterial)s,
+                    %(temperatura)s,
+                    %(frecuencia_cardiaca)s,
+                    %(saturacion_oxigeno)s,
+                    %(notas)s,
+                    %(nivel_triage)s,
+                    %(verificado_por)s,
+                    %(sintomas)s
+                ) RETURNING *;
+            """
+            
+            # Convert symptoms to array if string or keep as is if already array
+            sintomas = triage_data.get('sintomas', [])
+            if isinstance(sintomas, str):
+                sintomas = [sintomas]
+            
+            # Prepare data for insertion
+            insert_data = {
+                'patient_id': patient['id'],
+                'presion_arterial': triage_data.get('presion_arterial'),
+                'temperatura': triage_data.get('temperatura'),
+                'frecuencia_cardiaca': triage_data.get('frecuencia_cardiaca'),
+                'saturacion_oxigeno': triage_data.get('saturacion_oxigeno'),
+                'notas': triage_data.get('notas'),
+                'nivel_triage': triage_data.get('nivel_triage'),
+                'verificado_por': triage_data.get('verificado_por', 'Enfermería'),
+                'sintomas': sintomas
+            }
+            
+            print(f"Inserting triage record with data: {insert_data}")  # Debug log
+            
+            cur.execute(sql, insert_data)
+            new_record = cur.fetchone()
+            conn.commit()
+            
+            return new_record
+            
+    except Exception as e:
+        print(f"Error creating triage record: {str(e)}")
+        if conn:
+            conn.rollback()
+        raise e
+    finally:
+        if conn:
+            conn.close()
+
+def get_triage_records(patient_dni):
+    """Get all triage records for a patient"""
+    try:
+        conn = get_db_connection()
+        with conn.cursor(cursor_factory=DictCursor) as cur:
+            sql = """
+                SELECT tr.* 
+                FROM triage_records tr
+                JOIN patients p ON p.id = tr.patient_id
+                WHERE p.dni = %s
+                ORDER BY tr.fecha_triage DESC;
+            """
+            cur.execute(sql, (patient_dni,))
+            records = cur.fetchall()
+            return records
+    except Exception as e:
+        print(f"Error fetching triage records: {str(e)}")
+        raise e
+    finally:
+        if conn:
+            conn.close() 

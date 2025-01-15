@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS patients (
     direccion TEXT,
     genero VARCHAR(1),
     grupo_sanguineo VARCHAR(3),
-    seguro_social VARCHAR(20),
+    cuit VARCHAR(20),
+    nacionalidad VARCHAR(50),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ultima_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

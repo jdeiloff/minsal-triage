@@ -19,7 +19,8 @@ def check_public_records(dni):
             "direccion": "Calle Principal 123",
             "genero": "M",
             "grupo_sanguineo": "A+",
-            "seguro_social": "SS123456789"
+            "cuit": "20-12345678-9",
+            "nacionalidad": "Argentina"
         },
         "87654321": {
             "dni": "87654321",
@@ -29,7 +30,8 @@ def check_public_records(dni):
             "direccion": "Avenida Central 456",
             "genero": "F",
             "grupo_sanguineo": "O-",
-            "seguro_social": "SS987654321"
+            "cuit": "27-87654321-4",
+            "nacionalidad": "Argentina"
         },
         "11111111": {
             "dni": "11111111",
@@ -39,7 +41,30 @@ def check_public_records(dni):
             "direccion": "Plaza Mayor 789",
             "genero": "M",
             "grupo_sanguineo": "B+",
-            "seguro_social": "SS111111111"
+            "cuit": "20-11111111-1",
+            "nacionalidad": "Argentina"
+        },
+        "99999999": {
+            "dni": "99999999",
+            "nombre": "Pedro Gómez",
+            "fecha_nacimiento": "1985-07-10",
+            "telefono": "600987654",
+            "direccion": "Avenida Libertador 321",
+            "genero": "M",
+            "grupo_sanguineo": "AB+",
+            "cuit": "20-99999999-0",
+            "nacionalidad": "Argentina"
+        },
+        "1234567890": {
+            "dni": "1234567890",
+            "nombre": "Ana López",
+            "fecha_nacimiento": "1990-03-15",
+            "telefono": "600567890",
+            "direccion": "Plaza de la Libertad 123",
+            "genero": "F",
+            "grupo_sanguineo": "O+",
+            "cuit": "27-12345678-9",
+            "nacionalidad": "Paraguay"
         }
     }
     
