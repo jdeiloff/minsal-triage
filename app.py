@@ -5,7 +5,7 @@ from pathlib import Path
 from model import predict_triage
 from utils import save_patient_data
 import psycopg2
-from voice_recon import transcribe_audio
+#from voice_recon import transcribe_audio
 from db_utils import check_hospital_db, create_patient_entry, update_patient_record, create_triage_record, get_triage_records
 from public_api import check_public_records
 from nlp_processor import process_text_to_keywords
