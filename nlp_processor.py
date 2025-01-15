@@ -1,31 +1,3 @@
-import nltk
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
-import os
-
-# Create nltk_data directory if it doesn't exist
-nltk_data_dir = os.path.expanduser('~/nltk_data')
-if not os.path.exists(nltk_data_dir):
-    os.makedirs(nltk_data_dir)
-
-# Download all required NLTK data silently
-required_resources = [
-    'punkt',
-    'stopwords',
-    'punkt_tab/spanish.pickle'
-]
-
-for resource in required_resources:
-    try:
-        nltk.data.find(f'tokenizers/{resource}')
-    except LookupError:
-        try:
-            nltk.download(resource, quiet=True)
-        except:
-            # If direct download fails, try downloading the full punkt package
-            if resource == 'punkt_tab/spanish.pickle':
-                nltk.download('punkt', quiet=True)
-
 def process_text_to_keywords(text):
     """
     Process text to extract keywords using a simple rule-based approach
